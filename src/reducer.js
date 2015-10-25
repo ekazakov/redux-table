@@ -1,12 +1,19 @@
 import {RECEIVE_CARDS, REQUEST_CARDS} from './actions';
+import Immutable from 'immutable';
+import _ from 'lodash';
 
-export default function reducer (state = {loading: false}, action) {
-    switch (action.type) {
+const fromJs = (data) => Immutable.fromJS(data);
+
+export default function reducer (state, action) {
+    const {type} = action;
+    action = fromJs(_.omit(action, 'type'));
+
+    switch (type) {
         case RECEIVE_CARDS:
-            return Object.assign({}, state, action);
+            return state.mergeDeep(action);
 
         case REQUEST_CARDS:
-            return Object.assign({}, state, action);
+            return state.mergeDeep(action);
 
         default:
             return state;

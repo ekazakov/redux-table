@@ -23,6 +23,7 @@
     "webpack": "^1.12.2"
   },
   "dependencies": {
+    "immutable": "^3.7.5",
     "lodash": "^3.10.1",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
