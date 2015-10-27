@@ -12,13 +12,17 @@ import createLogger from 'redux-logger';
 import reducer from './reducer';
 import {fetchNextPage, fetchPrevPage, fetchSorted, fetchFirstPage} from './actions';
 import Table from './table';
+import Stage from './stage';
+import Modal from './Modal';
+import ModalsManager from './ModalsManager';
 
 const log = console.log.bind(console);
+
+let ModalsManagerInstance;
 
 class App extends Component {
     constructor(props) {
         super(props);
-        //log(props);
         this.props.dispatch(fetchFirstPage());
     }
 
@@ -43,17 +47,41 @@ class App extends Component {
             }
         };
 
-        //if (this.state.error != null) {
-        //    return <div>
-        //        <Table {...options}/>
-        //        <div>{this.state.error}</div>
-        //    </div>;
-        //}
-
         return <div>
             {this.props.loading ? <div className="loading">...loading</div> : ''}
-            <Table {...options}/>
+            <Table {...options}
+                style={{width: 1100}}
+                onEdit={this.onRowEdit.bind(this)}/>
+            <div>
+                <button onClick={this.showModal.bind(this)}>Show modal</button>
+            </div>
         </div>;
+    }
+
+    onRowEdit(item) {
+        const content = <table>
+            <tbody>
+                <tr><td>{item.get('name')}</td></tr>
+                <tr><td>{item.get('email')}</td></tr>
+                <tr><td>{item.get('website')}</td></tr>
+                <tr><td>{item.get('phone')}</td></tr>
+                <tr><td>{item.getIn('address.city'.split('.'))}</td></tr>
+            </tbody>
+        </table>;
+
+        ModalsManagerInstance.addModals(
+            modalFactory(content, 3,this.onModalClose));
+    }
+
+    onModalClose(componentId) {
+        ModalsManagerInstance.removeModal(componentId);
+    }
+
+    showModal() {
+        ModalsManagerInstance.addModals([
+            modalFactory('Hello', 1, this.onModalClose),
+            modalFactory('World', 2, this.onModalClose)
+        ]);
     }
 }
 
@@ -82,6 +110,7 @@ let Root = connect(state => {
     };
 })(App);
 
+
 window.addEventListener('load', function () {
     ReactDom.render(
         <Provider store={store}>
@@ -89,4 +118,21 @@ window.addEventListener('load', function () {
         </Provider>,
         document.getElementById('root')
     );
+
+    ModalsManagerInstance = ReactDom.render(<ModalsManager/>, document.getElementById('stage'));
 });
+
+function modalFactory(content, id, onClose) {
+    return (props) => {
+        const style = {
+            marginLeft: 20*props.id,
+            marginTop: 20*props.id
+        };
+        return <Modal
+            title={`Modal Dialog #${id}`}
+            style={style}
+            onClose={onClose} id={props.id}>
+            {content}
+        </Modal>;
+    };
+}

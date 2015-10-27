@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import _ from 'lodash';
 
 export default class Table extends Component {
     _onPrevClick() {
@@ -25,7 +26,7 @@ export default class Table extends Component {
     }
 
     _renderTable() {
-        return <table>
+        return <table style={this.props.style}>
             <thead>
             <tr>
                 <th><a href="#" onClick={() => this._onPrevClick()}>prev</a></th>
@@ -44,6 +45,7 @@ export default class Table extends Component {
                 <th><b>Website</b></th>
                 <th><b>Phone</b></th>
                 <th><b>City</b></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -58,13 +60,23 @@ export default class Table extends Component {
             <td>{item.get('email')}</td>
             <td>{item.get('website')}</td>
             <td>{item.get('phone')}</td>
-            <td>{item.getIn(['address.city'])}</td>
+            <td>{item.getIn('address.city'.split('.'))}</td>
+            <td>
+                <button onClick={this.onRowEdit.bind(this, item)}>
+                    Edit
+                </button>
+            </td>
         </tr>;
+    }
+
+    onRowEdit(item) {
+        this.props.onEdit(item);
     }
 }
 
 Table.defaultProps = {
     rows: [],
     start: 0,
-    end: 0
+    end: 0,
+    onEdit: _.noop
 };
