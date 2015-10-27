@@ -12,7 +12,6 @@ import createLogger from 'redux-logger';
 import reducer from './reducer';
 import {fetchNextPage, fetchPrevPage, fetchSorted, fetchFirstPage} from './actions';
 import Table from './table';
-import Stage from './stage';
 import Modal from './Modal';
 import ModalsManager from './ModalsManager';
 
@@ -70,7 +69,7 @@ class App extends Component {
         </table>;
 
         ModalsManagerInstance.addModals(
-            modalFactory(content, 3,this.onModalClose));
+            modalFactory(content, 3, this.onModalClose));
     }
 
     onModalClose(componentId) {
@@ -119,7 +118,7 @@ window.addEventListener('load', function () {
         document.getElementById('root')
     );
 
-    ModalsManagerInstance = ReactDom.render(<ModalsManager/>, document.getElementById('stage'));
+    ModalsManagerInstance = ReactDom.render(<ModalsManager store={store}/>, document.getElementById('stage'));
 });
 
 function modalFactory(content, id, onClose) {

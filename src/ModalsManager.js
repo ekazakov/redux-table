@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
+import Stage from './stage';
+import { Provider, connect } from 'react-redux';
 
 export default class ModalsManager extends Component {
     constructor(props) {
@@ -15,7 +17,7 @@ export default class ModalsManager extends Component {
 
         if (_.keys(this.state.modals).length === 0) return null;
 
-        return <Provider store={store}>
+        return <Provider store={this.props.store}>
             <Stage2>
                 {_.map(this.state.modals, (modal) => modal)}
             </Stage2>
